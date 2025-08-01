@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feliz Aniversario, Amor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Harmony -->
+    <!-- Application Structure Plan: The application is designed as an interactive journey through the core themes of the letter, rather than a linear text. This structure was chosen because the source material is emotional and non-sequential. It allows the user (the partner) to explore the feelings of gratitude, commitment, and shared journey in a more engaging, non-linear way. The structure consists of a main title, an introductory text, a central animated heart symbolizing constant thought, and four interactive "cards." Each card represents a key theme from the letter. Clicking a card reveals the corresponding text, transforming a static letter into an interactive experience that encourages exploration and reflection. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: "pienso en ti... cada segundo". Goal: Visualize constant love. Viz/Method: A continuously pulsing heart drawn on an HTML Canvas. Interaction: Ambient animation, no user interaction needed. Justification: A literal chart is inappropriate for this emotional concept. A subtle, elegant animation effectively conveys the feeling of a constant, beating heart and love without being distracting. Library: Vanilla JS for canvas animation.
+        - Report Info: Thematic paragraphs (gratitude, journey, promise, communication). Goal: Organize and present the letter's core messages. Viz/Method: Interactive cards (styled divs) with titles. Interaction: On-click reveal of text content. Justification: This breaks the letter into digestible emotional themes, making it more engaging than a wall of text. It invites the user to focus on one feeling at a time. Library/Method: HTML/Tailwind for structure, Vanilla JS for click-based interaction.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: #FDF8F2; 
+        }
+        h1, h2, .font-serif {
+            font-family: 'Playfair Display', serif;
+        }
+        .content-card {
+            transition: all 0.5s ease-in-out;
+            cursor: pointer;
+        }
+        .content-text {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.7s ease-in-out, padding 0.7s ease-in-out;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+        .content-text.open {
+            max-height: 1000px;
+            padding-top: 1.5rem;
+            padding-bottom: 1.5rem;
+        }
+        .heart-canvas-container {
+            width: 100%;
+            max-width: 200px;
+            height: 160px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+<body class="text-stone-700">
+
+    <main class="container mx-auto px-4 py-8 md:py-16 max-w-4xl text-center">
+
+        <header class="mb-8">
+            <h1 class="text-4xl md:text-6xl font-bold text-stone-800">Para mi Amor</h1>
+            <p class="mt-4 text-lg text-stone-600">Un pequeño recordatorio de todo lo que siento por ti.</p>
+        </header>
+
+        <section id="intro" class="mb-12 text-lg md:text-xl leading-relaxed max-w-2xl mx-auto">
+            <p>Amor, ya sabes que pienso en ti, pero quiero que sepas lo mucho que lo hago. Pienso en ti al despertar y al dormir, en cada momento del día, en cada segundo que pasa.</p>
+        </section>
+        
+        <div class="heart-canvas-container mb-12">
+            <canvas id="heartCanvas"></canvas>
+        </div>
+
+        <div class="text-center mb-12">
+            <p class="text-stone-600">He organizado mis pensamientos en cuatro temas principales. Haz clic en cada uno para leer más.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 text-left">
+
+            <!-- Card 1: Gratitud -->
+            <div id="card-gratitud" class="content-card bg-white rounded-lg shadow-md border border-stone-200 overflow-hidden">
+                <div class="p-6">
+                    <h2 class="text-2xl font-bold text-rose-800">Gratitud</h2>
+                    <p class="text-stone-500 mt-1">Por aceptarme y por tu amor.</p>
+                </div>
+                <div id="content-gratitud" class="content-text bg-rose-50 px-6">
+                    <p class="leading-relaxed">Realmente, lo que te escribo no tiene una secuencia, pues solo quiero darte las gracias por tantas cosas. Gracias por aceptarme, por permitirme empezar de cero contigo, por la confianza que me tienes y por el amor que me das. Te agradezco por haberme aceptado como tu pareja. Cuando me dijiste que también te gustaba, me sentí como un niño que recibe su primer regalo, uno que ha esperado por mucho tiempo y que guardará con mucho amor. Así me sentí yo.</p>
+                </div>
+            </div>
+
+            <!-- Card 2: Nuestro Camino -->
+            <div id="card-camino" class="content-card bg-white rounded-lg shadow-md border border-stone-200 overflow-hidden">
+                <div class="p-6">
+                    <h2 class="text-2xl font-bold text-teal-800">Nuestro Camino</h2>
+                    <p class="text-stone-500 mt-1">Todo lo que hemos construido juntos.</p>
+                </div>
+                <div id="content-camino" class="content-text bg-teal-50 px-6">
+                    <p class="leading-relaxed">Hemos pasado por muchos avances: confianza, amor, esperanzas e intimidad. Me alegra que todo eso haya ocurrido contigo y solo contigo. Es contigo con quien quiero seguir haciendo esas cosas, hasta en lo más mínimo. Quiero darte las gracias por permanecer a mi lado, por darme tu apoyo. Aunque sea pequeño debido a nuestra situación, créeme que me hace muy feliz saber que me apoyas en todo momento. Te amo.</p>
+                </div>
+            </div>
+
+            <!-- Card 3: Mi Promesa -->
+            <div id="card-promesa" class="content-card bg-white rounded-lg shadow-md border border-stone-200 overflow-hidden">
+                <div class="p-6">
+                    <h2 class="text-2xl font-bold text-amber-800">Mi Promesa</h2>
+                    <p class="text-stone-500 mt-1">Un futuro contigo, sin dudas.</p>
+                </div>
+                <div id="content-promesa" class="content-text bg-amber-50 px-6">
+                    <p class="leading-relaxed">Si en algún momento me preguntas si quiero estar contigo, mi respuesta será sí, sin titubeos, sin miedo, sin duda. Contigo no quiero nada a medias, ni momentos fugaces, ni historias incompletas. Quiero un amor que perdure y que con el tiempo se vuelva más y más fuerte. Quiero despertar a tu lado cada mañana y ver el brillo de tus ojos iluminando mis días. Quiero que seas el último pensamiento antes de dormir y el primero al abrir los ojos.</p>
+                </div>
+            </div>
+
+            <!-- Card 4: Juntos Hacia Adelante -->
+            <div id="card-juntos" class="content-card bg-white rounded-lg shadow-md border border-stone-200 overflow-hidden">
+                <div class="p-6">
+                    <h2 class="text-2xl font-bold text-indigo-800">Juntos Hacia Adelante</h2>
+                    <p class="text-stone-500 mt-1">Creciendo y aprendiendo a expresarnos.</p>
+                </div>
+                <div id="content-juntos" class="content-text bg-indigo-50 px-6">
+                    <p class="leading-relaxed">Además, me he dado cuenta de que a ambos nos cuesta hablar de cómo nos sentimos. Sé que te preocupas y yo también lo hago. Sé que es complicado hablarlo, pero estamos el uno para el otro, y poco a poco empezaremos a encontrar las palabras exactas para poder expresarnos mejor. Te amo y siempre te voy a amar.</p>
+                </div>
+            </div>
+
+        </div>
+
+        <footer class="mt-16">
+            <p class="text-3xl font-serif text-stone-800">Feliz Aniversario, Amor.</p>
+        </footer>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = [
+                { cardId: 'card-gratitud', contentId: 'content-gratitud' },
+                { cardId: 'card-camino', contentId: 'content-camino' },
+                { cardId: 'card-promesa', contentId: 'content-promesa' },
+                { cardId: 'card-juntos', contentId: 'content-juntos' }
+            ];
+
+            cards.forEach(item => {
+                const card = document.getElementById(item.cardId);
+                const content = document.getElementById(item.contentId);
+                if (card && content) {
+                    card.addEventListener('click', () => {
+                        const is_open = content.classList.contains('open');
+                        
+                        document.querySelectorAll('.content-text').forEach(el => el.classList.remove('open'));
+                        
+                        if(!is_open){
+                           content.classList.add('open');
+                        }
+                    });
+                }
+            });
+
+            const canvas = document.getElementById('heartCanvas');
+            const ctx = canvas.getContext('2d');
+            const container = canvas.parentElement;
+            let scale = 1;
+            let time = 0;
+
+            function resizeCanvas() {
+                canvas.width = container.clientWidth;
+                canvas.height = container.clientHeight;
+            }
+
+            function drawHeart(x, y, width, height, color) {
+                ctx.save();
+                ctx.beginPath();
+                const topCurveHeight = height * 0.3;
+                ctx.moveTo(x, y + topCurveHeight);
+                ctx.bezierCurveTo(x, y, x - width / 2, y, x - width / 2, y + topCurveHeight);
+                ctx.bezierCurveTo(x - width / 2, y + (height + topCurveHeight) / 2, x, y + (height + topCurveHeight) / 2, x, y + height);
+                ctx.bezierCurveTo(x, y + (height + topCurveHeight) / 2, x + width / 2, y + (height + topCurveHeight) / 2, x + width / 2, y + topCurveHeight);
+                ctx.bezierCurveTo(x + width / 2, y, x, y, x, y + topCurveHeight);
+                ctx.closePath();
+                ctx.fillStyle = color;
+                ctx.fill();
+                ctx.restore();
+            }
+
+            function animate() {
+                time += 0.05;
+                const pulse = 1 + 0.05 * Math.sin(time);
+                
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                const heartWidth = 80 * pulse;
+                const heartHeight = 70 * pulse;
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+
+                drawHeart(centerX, centerY - 10, heartWidth, heartHeight, 'rgba(220, 38, 38, 0.7)');
+                
+                requestAnimationFrame(animate);
+            }
+
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+            animate();
+        });
+    </script>
+
+</body>
+</html>
